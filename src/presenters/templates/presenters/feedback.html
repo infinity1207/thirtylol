@@ -1,0 +1,29 @@
+{% extends "presenters/base_presenters.html" %}
+
+{% block js_extra %}
+  $(document).ready(function(){
+    $("ul#site-nav li:eq(1)").attr("class", "active");
+  });
+{% endblock js_extra %}
+
+{% load staticfiles %}
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-offset-1 col-md-10">
+        <div class="jumbotron">
+          <h2 class="text-primary">如果你有任何问题或建议，请在此留言</h2>
+        </div>
+        <!--高速版-->
+        <div id="SOHUCS" sid="20091207"></div>
+        <script charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/changyan.js" ></script>
+        <script type="text/javascript">
+            window.changyan.api.config({
+                appid: 'cys4hmBCx',
+                conf: 'prod_c9247583d6d636454eaf86f5001033eb'
+            });
+        </script>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load settings_value %}
+<html>
+<head>
+  <title>{% block title %}30lol_游戏直播从这里开始{% endblock title %}</title>
+  {% block static_ref %}
+    <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="{% settings_value 'CDN_BASE' %}{% settings_value 'MEDIA_URL' %}favicon.ico">
+  {% endblock static_ref %}
+
+  {% block meta %}{% endblock meta %}
+
+  <script>
+    {% block js %}
+      {% block js_extra %}{% endblock js_extra %}
+    {% endblock js%}
+  </script>
+</head> 
+<body>
+  {% block navbar %}
+    <div class="container">
+      <nav role="navigation" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a href="/" class="navbar-brand site-title1">三十撸啊撸</a>
+          </div>
+          <!-- Collection of nav links and other content for toggling -->
+          <div id="navbarCollapse" class="collapse navbar-collapse">
+            <ul id="site-nav" class="nav navbar-nav nav-pills navbar-right">
+              <li><a href= "/">首页</a></li>
+              <li><a href= "{% url 'feedback' %}">反馈建议</a></li>
+              {% if request.user.is_anonymous %}
+                <li><a href= "{% url 'userena_signin' %}">登录</a></li>
+              {% else %}
+                <li class="dropdown">
+                  <a data-toggle="dropdown" data-target="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    {{ request.user.username }}
+                    <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a href="/accounts/{{ request.user.username }}">个人资料</a></li>
+                    <li><a href="{% url 'userena_favourite' request.user.username %}">我的关注</a></li>
+                    <li><a href="{% url 'userena_signout' %}">退出</a></li>
+                  </ul>
+                </li>
+              {% endif %}
+              <li><a href= "{% url 'about' %}">关于</a></li>
+              {% if request.user.is_superuser %}
+                <li><a href="https://api.weibo.com/oauth2/authorize?client_id={% settings_value 'WEIBO_OAUTH_APP_KEY' %}&response_type=code&redirect_uri=http://{{ request.get_host }}/accounts/oauth/">微博登录</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  {% endblock navbar %}
+
+  {% block body %}{% endblock body %}
+</body>
+</html>

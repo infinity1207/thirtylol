@@ -1,0 +1,127 @@
+@avatarSize: 64px;
+@avatarRightGap: 20px;
+@personColumnWidth: 320px;
+@livingColumnWidth: 120px;
+@presenterListHeadBackgroundColor: #F5F6F7;
+@presenterListHeadColor: #8A98A5;
+@personNameColor: #292f33;
+@platformLogoWidth: 86px;
+@platformLogoHeight: 32px;
+
+.backgroundImage (@url, @xPos, @yPos) {
+	background:@url;
+	background-repeat:no-repeat;
+	background-position:@xPos @yPos;
+}
+
+// .navbar-default {
+//     background-color: rgba(255, 255, 255, 0.95);
+//     -webkit-box-shadow: 0 5px 4px -4px rgba(190,190,190,.1);
+//     -moz-box-shadow: 0 5px 4px -4px rgba(190,190,190,.1);
+//     box-shadow: 0 5px 4px -4px rgba(190,190,190,.1);
+//     border-bottom: 1px solid #f5f5f5;
+// }
+
+// .navbar-default .navbar-nav > li > a:hover,
+// .navbar-default .navbar-nav > li > a:focus,
+// .navbar-default .navbar-nav > li.active > a,
+// .navbar-default .navbar-nav > li.active > a:hover,
+// .navbar-default .navbar-nav > li.active > a:focus {
+//     color: white;
+//     background-color: #2CBA68;
+// }
+
+// .navbar-default .navbar-nav > .dropdown:hover .dropdown-menu {
+//     display: block;
+// }
+
+div.avatar-middle {
+	width: @avatarSize;
+	height: @avatarSize;
+	img{
+		width:inherit;
+		height:inherit;
+	}
+}
+
+div.game-panel {
+	margin-bottom: 20px;
+}
+
+table.presenter-list {
+	td.avatar {
+		width: @avatarSize + 10px;
+	}
+	td.presenter-info {
+		width: 220px;
+	}
+	td.platform {
+		width: 120px;
+	}
+	td.follow {
+		width: 100px;
+	}
+}
+
+div.living {
+	div.living-status {
+		float: left;
+		a {
+			text-decoration: none;
+		}
+		a:hover {
+			text-decoration: none;
+		}
+	}
+
+	div.living-audience {
+		margin-left: 10px;
+		float: left;
+		margin-top: -2px;
+
+		.backgroundImage(url(../img/audience.png), 0, 0);
+
+		span {
+			margin-left: 28px;
+		}
+	}
+
+	div.last-show-end {
+		margin-top: 5px;
+		font-size: 80%;
+	}
+	div.living-room-title {
+		font-size: 80%;
+	}
+}
+
+div.intro-bottom {
+	float: right;
+	margin-right: 20px;
+}
+
+div.platform-logo {
+	img{
+		width: 84px;
+		height: 52px;
+	}
+}
+
+div.content {
+	margin-top: 70px;
+}
+
+div.comment {
+	margin-top: 50px;
+}
+
+// follow button
+td.follow {
+	div.follow {
+		margin-top: 20px;
+	}
+	button {
+		width: 80px;
+		height: 30px;
+	}
+}

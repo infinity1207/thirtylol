@@ -1,0 +1,56 @@
+{# <a href="https://api.weibo.com/oauth2/authorize?client_id=2625707464&response_type=code&redirect_uri=http://127.0.0.1:8000">登录</a> #}
+
+{% extends 'accounts/base_profile.html' %}
+
+{% load i18n %}
+{% block title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+<div class="signup form-account">
+<legend>注册新用户</legend>
+<form action="" method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <table class="table non-border">
+    <tr class="username">
+      <td><label for="{{ form.username.id_for_label }}" class="control-label">用户名</label></td>
+      <td>
+        <input type="text" class="form-control" id="{{ form.username.id_for_label }}" name="{{ form.username.html_name }}" value="{{ form.username.value|default:'' }}">
+        {{ form.username.errors }}
+      </td>
+    </tr>
+
+    <tr class="email">
+      <td><label for="{{ form.email.id_for_label }}" class="control-label">邮件地址</label></td>
+      <td>
+        <input type="email" class="form-control" id="{{ form.email.id_for_label }}" name="{{ form.email.html_name }}" value="{{ form.email.value|default:'' }}">
+        {{ form.email.errors }}
+      </td>
+    </tr>
+
+    <tr class="password">
+      <td><label for="{{ form.password1.id_for_label }}" class="control-label">密码</label></td>
+      <td>
+        <input type="password" class="form-control" id="{{ form.password1.id_for_label }}" name="{{ form.password1.html_name }}">
+        {{ form.password1.errors }}
+      </td>
+    </tr>
+
+    <tr class="password">
+      <td><label for="{{ form.password2.id_for_label }}" class="control-label">重复密码</label></td>
+      <td>
+        <input type="password" class="form-control" id="{{ form.password2.id_for_label }}" name="{{ form.password2.html_name }}">
+        {{ form.password2.errors }}
+      </td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td>
+        <button type="submit" class="btn btn-primary">注册</button>
+      </td>
+    </tr>
+  </table>
+</form>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'userena/base_userena.html' %}
+{% load i18n %}
+{% load url from future %}
+{% load staticfiles %}
+{% load settings_value %}
+
+{% block title %}{% blocktrans with profile.user.username as username %}{{ username }}'s profile.{% endblocktrans %}{% endblock %}
+{% block content_title %}<h2>{{ profile.user.username }} {% if profile.user.get_full_name %}({{ profile.user.get_full_name }}){% endif %}</h2>{% endblock %}
+
+{% block static_ref %}
+  {{ block.super }} 
+  <link rel="stylesheet" href="{% settings_value 'CDN_BASE' %}{% static 'accounts/css/styles.css' %}">
+  <link rel="stylesheet" href="{% settings_value 'CDN_BASE' %}{% static 'presenters/css/styles.css' %}">
+{% endblock static_ref %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-2">
+        {% block tab %}
+          <ul id="profile-nav" class="nav nav-pills nav-stacked">
+            {% block profile_navigation_items %}
+              <li id="profile-0"><a href="{% url 'userena_profile_detail' user.username %}">{% trans "View profile" %}</a></li>
+              <li id="profile-1"><a href="{% url 'userena_profile_edit' user.username %}">{% trans "Edit details" %}</a></li>
+              {% if request.user.my_profile.source.flag < 100 %}
+              <li id="profile-2"><a href="{% url 'userena_password_change' user.username %}">{% trans "Change password" %}</a></li>
+              {% endif %}
+              <li id="profile-3"><a href="{% url 'userena_favourite' user.username %}">我的关注</a></li>
+            {% endblock %}
+          </ul>
+        {% endblock tab %}
+      </div>
+
+      <div class="col-md-10">
+        <div class="tab_page">
+        {% block tab_page %}
+        {% endblock tab_page %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

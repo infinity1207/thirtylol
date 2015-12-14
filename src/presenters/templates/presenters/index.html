@@ -1,0 +1,277 @@
+{% extends "presenters/base_presenters.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load settings_value %}
+{% load presenters_filters %}
+
+{% block meta %}
+  <meta property="wb:webmaster" content="{% settings_value 'WEIBO_OAUTH_VERIFY' %}" /> 
+{% endblock meta %}
+
+{% block js_extra %}
+  function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
+
+  function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+
+  function replaceAttr(obj, old_val, new_val, attr_name) {
+    if (attr_name == undefined) {
+      attr_name = "class";
+    }
+    var l = obj.attr(attr_name).split(" ");
+    var i = l.indexOf(old_val);
+    if (i >= 0) {
+      l[i] = new_val
+      obj.attr(attr_name, l.join(' '));
+    }
+  }
+
+  function onMouseEnter() {
+      replaceAttr($(this), "btn-info", "btn-danger");
+      $(this).text("取消关注");
+  }
+
+  function onMouseLeave() {
+      replaceAttr($(this), "btn-danger", "btn-info");
+      $(this).text("正在关注");
+  }
+
+  function follow() {
+    {% if request.user.is_authenticated %}
+      var url = "{% url 'userena_follow' %}";
+
+      params = {
+        user_id: {{ request.user.id }},
+        presenter_id: $(this).parents("tr").attr('presenter-id'),
+      };
+      $.post(url, params, function(data){
+        replaceAttr($(this), "unfollow", "following");
+        replaceAttr($(this), "btn-default", "btn-info");
+        $(this).text("正在关注");
+
+        $(this).unbind()
+        $(this).bind("click", unfollow);
+        $(this).bind("mouseenter", onMouseEnter);
+        $(this).bind("mouseleave", onMouseLeave);
+      }.bind(this));
+    {% else %}
+      // redirect signin page
+      $(window.location).attr("href", "{% url 'userena_signin' %}?next={{ request.get_full_path }}");
+    {% endif %}
+  }
+
+  function unfollow() {
+    var url = "{% url 'userena_unfollow' %}";
+    params = {
+      user_id: {{ request.user.id }},
+      presenter_id: $(this).parents("tr").attr('presenter-id'),
+    };
+    $.post(url, params, function(data){
+      replaceAttr($(this), "following", "unfollow");
+      replaceAttr($(this), "btn-danger", "btn-default");
+      $(this).text("关注");
+
+      $(this).unbind();
+      $(this).bind("click", follow);
+    }.bind(this));
+  }
+
+  $(document).ready(function(){
+
+    $("ul#site-nav li:eq(0)").attr("class", "active");
+
+    $("button.following").bind("mouseenter", onMouseEnter);
+    $("button.following").bind("mouseleave", onMouseLeave);
+
+    $("button.unfollow").bind("click", follow);
+    $("button.following").bind("click", unfollow);
+  });
+{% endblock js_extra %}
+
+{% block content %}
+  <div class="container presenter-list">
+    <div class="row game-panel">
+    <div>
+      <ul class="nav nav-pills">
+        <li class="{{ request.GET.game|yesno:',active' }}"><a href="{% url 'presenters:index' %}"></span><strong>全部</strong></a></li>
+        {% for game in game_list %}
+          {% if request.GET.game == game.name %}
+            <li role="presentation" class="active"><a href="?game={{ game.name }}">{{ game.name }}</a></li>
+          {% else %}
+            <li role="presentation"><a href="?game={{ game.name }}">{{ game.name }}</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col-md-10">
+        <form class="form-horizontal" action=".">
+          <div class="form-group">
+            <div class="col-sm-5">
+              <input type="text" class="form-control" name="q" placeholder="请输入主播的关键字，多个关键字用空格分开" value="{{ request.GET.q }}">
+            </div>
+            <button type="submit" class="btn btn-primary">查询</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row" >
+      <div class="col-md-10">
+        <table class="presenter-list table">
+          {% for presenter in presenter_list %}
+            <tr presenter-id="{{ presenter.id }}">
+              <td class="avatar">
+                <div class="avatar-middle">
+                  <img class="img-circle" src="{{ presenter.avatar_url }}" />
+                </div>
+              </td>
+              <td class="presenter-info">
+                <div class="presenter-info">
+                  <p class="nickname">{{ presenter.nickname }}</p>
+                  <div class="living">
+                    <div class="living-status">
+                      {% if presenter.presenterdetail.showing %}
+                        <a href="{{ presenter.room_url }}" target="_blank" class="living"><span class="label label-success">正在直播</span></a>
+                      {% else %}
+                        <span class="label label-default">未开播</span>
+                      {% endif %}
+                    </div>
+
+                    {# display room's title if living else display last live end time.#}
+                    {% if presenter.presenterdetail.showing %}
+                      <div class="living-audience">
+                        <span><small>{{ presenter.presenterdetail.audience_count|abbreviation_number }}</small></span>
+                      </div>
+                      <div class="clearfix"></div>
+                      <div class="living-room-title">
+                        <p class="text-success">{{ presenter.presenterdetail.room_title }}</p>
+                      </div>
+                    {% else %}
+                      <div class="clearfix"></div>
+                      <div class="last-show-end">
+                        {% if presenter.presenterdetail.last_show_end %}
+                          <p class="text-muted">结束于 {{ presenter.presenterdetail.last_show_end|timesince }} 前</p>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </td>
+              <td class="intro">
+                {% if presenter.introduce %}
+                  <p><small>{{ presenter.introduce }}</small></p>
+                {% else %}
+                  <p><small>暂无介绍</small></p>
+                {% endif %}
+                <div>
+                  <div class="intro-bottom">
+                    {% if request.user.is_superuser %}
+                      <a href="/admin/presenters/presenter/{{ presenter.id }}"><small>编辑</small></a>
+                    {% endif %}
+                    <a href="{% url 'presenters:detail' presenter.id %}">
+                      <small>
+                        评论(<span id = "sourceId::{{ presenter.id }}" class = "cy_cmt_count"></span>)
+                      </small>
+                    </a>
+                    <script id="cy_cmt_num" src="http://changyan.sohu.com/upload/plugins/plugins.list.count.js?clientId=cys4hmBCx"></script>
+                  </div>
+                </div>
+              </td>
+              <td class="follow">
+                <div class="follow">
+                  {% if presenter in request.user.my_profile.follows.all %}
+                    <button type="button" class="following btn btn-info btn-xs">正在关注</button>
+                  {% else %}
+                    <button type="button" class="unfollow btn btn-default btn-xs">关注</button>
+                  {% endif %}
+                </div>
+              </td>
+              <td class="platform">
+                <div class="platform-logo">
+                  <a href="{{ presenter.room_url }}" target="_blank">
+                    <img src="{% settings_value 'CDN_BASE' %}{{ presenter.platform.logo.url }}" alt="{{ presenter.platform.name }}" title="{{ presenter.platform.name }}"/>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+
+        <nav>
+          <ul class="pager">
+            {% if page_number == 1 %}
+              <li class="disabled"><a>上一页</a></li>
+            {% else %}
+              {% if without_page_number_GET %}
+                <li><a href="{{ without_page_number_GET }}&page={{ page_number|add:"-1" }}">上一页</a></li>
+              {% else%}
+                <li><a href="?page={{ page_number|add:"-1" }}">上一页</a></li>
+              {% endif %}
+            {% endif %}
+            
+            {# 多页时显示页码 #}
+            {% if num_pages > 1 %}
+              <li>{{ page_number }}/{{ num_pages }}</li>
+            {% endif %}
+
+            {% if page_number == num_pages %}
+              <li class="disabled"><a>下一页</a></li>
+            {% else %}
+              {% if without_page_number_GET %}
+                <li><a href="{{ without_page_number_GET }}&page={{ page_number|add:"1" }}">下一页</a></li>
+              {% else%}
+                <li><a href="?page={{ page_number|add:"1" }}">下一页</a></li>
+              {% endif %}
+            {% endif %}
+          </ul>
+        </nav>
+      </div> <!-- <div class="col-md-10"> -->
+
+      <div class="col-md-2">
+        <div class="list-group">
+          <a href="{% url 'presenters:index' %}" class="list-group-item {{ request.GET.platform|yesno:',active' }}"><span class="badge">{{ num_all_presenters }}</span><strong>全部</strong></a>
+
+          {% for platform in platform_list %}
+            {% if request.GET.platform == platform.name %}
+              <a href="?platform={{ platform.name }}" class="list-group-item active"><span class="badge">{{ platform.num_presenters }}</span>{{ platform.name }}</a>
+            {% else %}
+              <a href="?platform={{ platform.name }}" class="list-group-item"><span class="badge">{{ platform.num_presenters }}</span>{{ platform.name }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <div>
+          <p>目前仅收录了站长常看的一些主播，如果大家有喜欢的主播希望添加进来，请在<a href="{% url 'feedback' %}">反馈建议</a>里给我留言</p>
+          <p>欢迎大家对喜欢的主播进行评论，优秀的评论将会出现在主播介绍里</p>
+        </div>
+      </div>
+
+    </div> <!-- <div class="row"> -->
+  </div>
+{% endblock content %}

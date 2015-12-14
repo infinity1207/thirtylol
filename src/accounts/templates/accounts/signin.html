@@ -1,0 +1,58 @@
+{% extends 'accounts/base_profile.html' %}
+{% load i18n %}
+{% load url from future %}
+{% load staticfiles %}
+{% load settings_value %}
+
+{% block title %}{% trans "Signin" %}{% endblock %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
+  <p>{{ request.user.username }}</p>
+  <p><a href="{% url 'userena_signout' %}">退出</a></p>
+{% else %} 
+  <div class="signin form-account">
+    <legend>登录</legend>
+    <form action="" method="post">
+      {% csrf_token %} 
+
+      <input type="text" name="next" value="{{ request.GET.next }}" hidden />
+
+      {{ form.non_field_errors }}
+      <table class="table non-border">
+        <tr class="email">
+          <td><label for="{{ form.identification.id_for_label }}" class="control-label">用户名</label></td>
+          <td>
+            <input type="text" class="form-control" id="{{ form.identification.id_for_label }}" name="{{ form.identification.html_name }}" value="{{ form.identification.value|default:'' }}" placeholder="用户名或邮件地址" />
+            {{ form.identification.errors }}
+          </td>
+        </tr>
+
+        <tr class="password">
+          <td><label for="{{ form.password.id_for_label }}" class="control-label">密码</label></td>
+          <td>
+            <input type="password" class="form-control password-reset" id="{{ form.password.id_for_label }}" name="{{ form.password.html_name }}" />
+            <a class="password-reset" href="{% url 'userena_password_reset' %}">忘记密码</a>
+            {{ form.password.errors }}
+          </td>
+        </tr>
+        <tr class="submit">
+          <td></td>
+          <td>
+            <button type="submit" class="btn btn-primary">登录</button>
+            <a class="signup" href="{% url 'userena_signup' %}">还没有帐号？立即注册</a>
+          </td>
+        </tr>
+        <!--
+        <tr>
+          <td>社交账号登录</td>
+          <td>
+            <p><a href="https://api.weibo.com/oauth2/authorize?client_id={% settings_value 'WEIBO_OAUTH_APP_KEY' %}&response_type=code&redirect_uri=http://{{ request.get_host }}/oauth/">微博登录</a></p>
+          </td>
+        </tr>
+        -->
+      </table>
+    </form>
+  </div>
+{% endif %}
+{% endblock %}

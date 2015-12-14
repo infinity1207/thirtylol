@@ -1,0 +1,55 @@
+{% extends 'accounts/base_profile.html' %}
+{% load presenters_filters %}
+
+{% block js_extra %}
+  $(document).ready(function(){
+    $("ul#profile-nav > li#profile-3").attr("class", "active");
+  });
+{% endblock js_extra %}
+
+{% block tab_page %}
+  <div class="follow-list">
+    {% if not presenter_list %}
+      <p>你没有关注任何主播，快去<a href="/">首页</a>添加你喜欢的主播吧！</p>
+    {% else %}
+      {% for presenter in presenter_list %}
+        <div class="presenter-cell">
+          <div class="avatar-middle">
+            <img class="img-circle" src="{{ presenter.avatar_url }}">
+          </div>
+          <div class="presenter-info">
+            <p class="nickname">{{ presenter.nickname }}</p>
+            <div class="living">
+              <div class="living-status">
+                {% if presenter.presenterdetail.showing %}
+                  <a href="{{ presenter.room_url }}" target="_blank" class="living"><span class="label label-success">正在直播</span></a>
+                {% else %}
+                  <span class="label label-default">未开播</span>
+                {% endif %}
+              </div>
+
+              {# display room's title if living else display last live end time.#}
+              {% if presenter.presenterdetail.showing %}
+                <div class="living-audience">
+                  <span><small>{{ presenter.presenterdetail.audience_count|abbreviation_number }}</small></span>
+                </div>
+                <div class="clearfix"></div>
+                <div class="living-room-title">
+                  <p class="text-success">{{ presenter.presenterdetail.room_title }}</p>
+                </div>
+              {% else %}
+                <div class="clearfix"></div>
+                <div class="last-show-end">
+                  {% if presenter.presenterdetail.last_show_end %}
+                    <p class="text-muted">结束于 {{ presenter.presenterdetail.last_show_end|timesince }} 前</p>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endblock tab_page %}

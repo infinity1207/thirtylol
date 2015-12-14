@@ -8,13 +8,13 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-build/
+# build/
 develop-eggs/
-dist/
+# dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# lib/
 lib64/
 parts/
 sdist/
@@ -48,10 +48,21 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
+# *.log
 
 # Sphinx documentation
 docs/_build/
 
 # PyBuilder
 target/
+
+# VisualStudio_PTVS
+*.user
+*.suo
+bin/
+obj/
+*.*~
+.module-cache/
+log/
+whoosh_index/
+*.sqlite3

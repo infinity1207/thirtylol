@@ -1,0 +1,38 @@
+{% extends 'accounts/base_profile.html' %}
+
+{% load thumbnail %}
+
+{% block js_extra %}
+  $(document).ready(function(){
+    $("ul#profile-nav > li:eq(1)").attr("class", "active");
+  });
+{% endblock js_extra %}
+
+{% block tab_page %}
+<div class="personal-edit">
+  <legend>编辑头像</legend>
+  <form enctype="multipart/form-data" action="" method="post">
+    {% csrf_token %}
+    <table class="table non-border">
+      <tr>
+        <td><label>当前头像</label></td>
+        <td>
+        {% if profile.mugshot %}
+          <img src="{{ profile.mugshot.url }}" alt="" />
+        {% else %}
+          无
+        {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><label>选择一个图片文件</label></td>
+        <td>{{ form.mugshot }}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><button type="submit" class="btn btn-primary">提交</button></td>
+      </tr>
+    </table>
+  </form>
+</div>
+{% endblock tab_page %}

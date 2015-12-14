@@ -1,0 +1,58 @@
+{% extends "presenters/base_presenters.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-1">
+			<div class="avatar-middle">
+				<img class="img-circle" src="{{ presenter.avatar_url }}">
+			</div>
+		</div>
+		<div class="col-md-10">
+			<div class="intro">
+				<p><strong>{{ presenter.nickname }}</strong></p>
+				{% if presenter.introduce %}
+					<p>{{ presenter.introduce }}</p>
+				{% else %}
+					<p>暂无介绍</p>
+				{% endif %}
+
+        <div class="living">
+          <div class="living-status">
+            {% if presenter.presenterdetail.showing %}
+              <a href="{{ presenter.room_url }}" target="_blank" class="living"><span class="label label-success">正在直播</span></a>
+            {% else %}
+              <span class="label label-default">未开播</span>
+            {% endif %}
+          </div>
+
+          {% if presenter.presenterdetail.showing %}
+            <div class="living-audience">
+              <span><small>{{ presenter.presenterdetail.audience_count }}</small></span>
+            </div>
+          {% endif %}
+        </div>
+			</div>
+			<div class="living">
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-md-offset-1 col-md-10 comment">
+			<!--高速版-->
+			<div id="SOHUCS" sid="{{ presenter.id }}"></div>
+			<script charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/changyan.js" ></script>
+			<script type="text/javascript">
+				window.changyan.api.config({
+					appid: 'cys4hmBCx',
+					conf: 'prod_c9247583d6d636454eaf86f5001033eb'
+				});
+			</script>
+		</div>
+	</div>
+</div>
+{% endblock content %}

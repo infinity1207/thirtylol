@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load settings_value %}
+
+{% block static_ref %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% settings_value 'CDN_BASE' %}{% static 'presenters/css/styles.css' %}">
+{% endblock static_ref %}
+  
+{% block body %}
+  <div class="content">
+    {% block content %}{% endblock content %}
+  </div>
+{% endblock body %}

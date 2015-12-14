@@ -1,0 +1,32 @@
+{% extends 'accounts/base_profile.html' %}
+
+{% block js_extra %}
+  $(document).ready(function(){
+    $("ul#profile-nav > li:eq(0)").attr("class", "active");
+  });
+{% endblock js_extra %}
+
+{% block tab_page %}
+<div class="personal">
+  <legend>个人资料</legend>
+  <table class="table non-border">
+    <tr>
+      <td><label>来源</label></td>
+      <td>{{ profile.source.name }}</td>
+    </tr>
+    <tr>
+      <td><label>用户名</label></td>
+      <td>{{ profile.user.username }}</td>
+    </tr>
+    <tr>
+      {% if profile.source.flag >= 100 %}
+        <td><label>微博账户</label></td>
+        <td>{{ profile.user.oauth.uid }}</td>
+      {% else %}
+        <td><label>邮件地址</label></td>
+        <td>{{ profile.user.email }}</td>
+      {% endif %}
+    </tr>
+  </table>
+</div>
+{% endblock tab_page %}
