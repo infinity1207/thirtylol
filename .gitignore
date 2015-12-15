@@ -65,4 +65,3 @@ obj/
 .module-cache/
 log/
 whoosh_index/
-*.sqlite3
