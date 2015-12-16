@@ -1,8 +1,8 @@
 django==1.8.4
 django-tastypie==0.12.2
-Pillow>=2.9.0
-gunicorn>=19.3.0
-jieba>=0.37
-Whoosh>=2.7.0
-django-haystack>=2.4.0
-django-userena>=1.4.1
+Pillow==2.9.0
+gunicorn==19.3.0
+jieba==0.37
+Whoosh==2.7.0
+django-haystack==2.4.0
+django-userena==1.4.1

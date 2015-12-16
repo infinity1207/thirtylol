@@ -8,7 +8,6 @@ SRC_ROOT = path.dirname(path.abspath(path.dirname(__file__)))
 PROJECT_ROOT = path.join(SRC_ROOT, '..')
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = (
     '127.0.0.1',
