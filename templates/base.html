@@ -15,6 +15,15 @@
 
   <script>
     {% block js %}
+      {% block baidu_tongji %}
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "//hm.baidu.com/hm.js?{% settings_value 'BAIDU_TONGJI' %}";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      {% endblock baidu_tongji %}
       {% block js_extra %}{% endblock js_extra %}
     {% endblock js%}
   </script>

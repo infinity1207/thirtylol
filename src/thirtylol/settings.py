@@ -151,9 +151,9 @@ INSTALLED_APPS = (
     'presenters',
 )
 
+# userena setting
 ANONYMOUS_USER_ID = -1
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
-# AUTH_USER_MODEL = 'accounts.UserEx'
 AUTHENTICATION_BACKENDS = (
     'accounts.backends.OAuthAuthenticationBackend',
     'userena.backends.UserenaAuthenticationBackend',
@@ -163,23 +163,11 @@ AUTHENTICATION_BACKENDS = (
 USERENA_SIGNIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'
-USERENA_ACTIVATION_REQUIRED = True
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-EMAIL_HOST = 'smtp.host.com'
-EMAIL_HOST_USER = 'user@host.com'
-EMAIL_HOST_PASSWORD = 'password'
-EMAIL_PORT = 25
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+USERENA_ACTIVATION_REQUIRED = False
 
 USERENA_MUGSHOT_SIZE = 48
 USERENA_MUGSHOT_CROP_TYPE = True
 
-# sina weibo oauth config
-WEIBO_OAUTH_VERIFY = '*********'
-WEIBO_OAUTH_APP_KEY = 'app_key'
-WEIBO_OAUTH_APP_SECRET = 'app_secret'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
